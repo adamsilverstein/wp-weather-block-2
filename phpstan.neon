@@ -1,0 +1,18 @@
+parameters:
+	level: 5
+	paths:
+		- weather-block.php
+		- includes/
+	excludePaths:
+		- build/
+		- node_modules/
+		- vendor/
+		- tests/
+	bootstrapFiles:
+		- phpstan-bootstrap.php
+	ignoreErrors:
+		# WordPress functions are not defined in the context PHPStan runs
+		- '#Function (add_action|add_filter|register_block_type|wp_enqueue_script|wp_enqueue_style|__) not found#'
+		- '#Constant ABSPATH not found#'
+	extensions:
+		- szepeviktor/phpstan-wordpress

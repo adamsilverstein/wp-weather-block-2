@@ -1,0 +1,40 @@
+{
+    "name": "wordpress/weather-block",
+    "description": "A WordPress block plugin that displays current weather conditions for user-specified locations.",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0-or-later",
+    "require": {
+        "php": ">=7.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5",
+        "squizlabs/php_codesniffer": "^3.7",
+        "wp-coding-standards/wpcs": "^3.0",
+        "phpstan/phpstan": "^1.10",
+        "szepeviktor/phpstan-wordpress": "^1.3",
+        "phpstan/extension-installer": "^1.3",
+        "dealerdirect/phpcodesniffer-composer-installer": "^1.0"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "phpstan/extension-installer": true
+        }
+    },
+    "scripts": {
+        "phpcs": "phpcs",
+        "phpcbf": "phpcbf",
+        "phpstan": "phpstan analyze",
+        "test": "phpunit"
+    },
+    "autoload": {
+        "psr-4": {
+            "WeatherBlock\\": "includes/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "WeatherBlock\\Tests\\": "tests/php/"
+        }
+    }
+}
