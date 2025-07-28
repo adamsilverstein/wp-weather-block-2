@@ -14,6 +14,27 @@ if ( ! defined( 'WP_DEBUG' ) ) {
 	define( 'WP_DEBUG', true );
 }
 
+// Define plugin constants for PHPStan.
+if ( ! defined( 'WEATHER_BLOCK_VERSION' ) ) {
+	define( 'WEATHER_BLOCK_VERSION', '0.1.0' );
+}
+
+if ( ! defined( 'WEATHER_BLOCK_PLUGIN_FILE' ) ) {
+	define( 'WEATHER_BLOCK_PLUGIN_FILE', __FILE__ );
+}
+
+if ( ! defined( 'WEATHER_BLOCK_PLUGIN_DIR' ) ) {
+	define( 'WEATHER_BLOCK_PLUGIN_DIR', '/path/to/plugin/' );
+}
+
+if ( ! defined( 'WEATHER_BLOCK_PLUGIN_URL' ) ) {
+	define( 'WEATHER_BLOCK_PLUGIN_URL', 'https://example.com/wp-content/plugins/weather-block/' );
+}
+
+if ( ! defined( 'WEATHER_BLOCK_API_KEY' ) ) {
+	define( 'WEATHER_BLOCK_API_KEY', 'test_api_key' );
+}
+
 // Define common WordPress functions that PHPStan needs to know about.
 if ( ! function_exists( 'add_action' ) ) {
 	/**
