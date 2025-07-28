@@ -19,6 +19,9 @@ require_once dirname( __DIR__, 2 ) . '/vendor/autoload.php';
 // Load the WeatherApi class.
 require_once dirname( __DIR__, 2 ) . '/includes/WeatherApi.php';
 
+// Load the Settings class.
+require_once dirname( __DIR__, 2 ) . '/includes/Settings.php';
+
 /**
  * Mock WordPress functions for testing.
  */
