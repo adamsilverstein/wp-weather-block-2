@@ -149,79 +149,15 @@ function weather_block_get_weather_data( WP_REST_Request $request ) {
 		);
 	}
 
-	// Check if API key is configured.
-	if ( empty( WEATHER_BLOCK_API_KEY ) || 'your_openweathermap_api_key_here' === WEATHER_BLOCK_API_KEY ) {
-		return new WP_Error(
-			'missing_api_key',
-			__( 'Weather API key is not configured.', 'weather-block' ),
-			array( 'status' => 500 )
-		);
+	// Create weather API instance.
+	$weather_api = new WeatherBlock\WeatherApi( WEATHER_BLOCK_API_KEY );
+
+	// Get weather data.
+	$weather_data = $weather_api->get_weather_data( $location, $units );
+
+	if ( is_wp_error( $weather_data ) ) {
+		return $weather_data;
 	}
-
-	// Try to get cached data first.
-	$cache_key = 'weather_block_' . md5( $location . $units );
-	$cached_data = get_transient( $cache_key );
-
-	if ( false !== $cached_data ) {
-		return rest_ensure_response( $cached_data );
-	}
-
-	// Fetch fresh data from OpenWeatherMap API.
-	$api_url = add_query_arg(
-		array(
-			'q'     => $location,
-			'appid' => WEATHER_BLOCK_API_KEY,
-			'units' => $units,
-		),
-		'https://api.openweathermap.org/data/2.5/weather'
-	);
-
-	$response = wp_remote_get(
-		$api_url,
-		array(
-			'timeout' => 10,
-			'headers' => array(
-				'User-Agent' => 'WordPress Weather Block Plugin/' . WEATHER_BLOCK_VERSION,
-			),
-		)
-	);
-
-	if ( is_wp_error( $response ) ) {
-		error_log( 'Weather Block API Error: ' . $response->get_error_message() );
-		return new WP_Error(
-			'api_request_failed',
-			__( 'Could not fetch weather data. Please try again later.', 'weather-block' ),
-			array( 'status' => 500 )
-		);
-	}
-
-	$body = wp_remote_retrieve_body( $response );
-	$data = json_decode( $body, true );
-
-	if ( empty( $data ) || isset( $data['cod'] ) && 200 !== (int) $data['cod'] ) {
-		$error_message = isset( $data['message'] ) ? $data['message'] : __( 'Unknown API error', 'weather-block' );
-		error_log( 'Weather Block API Error: ' . $error_message );
-
-		return new WP_Error(
-			'api_error',
-			__( 'Could not fetch weather data. Please check the location and try again.', 'weather-block' ),
-			array( 'status' => 400 )
-		);
-	}
-
-	// Process and sanitize the data.
-	$weather_data = array(
-		'location'    => sanitize_text_field( $data['name'] ),
-		'country'     => sanitize_text_field( $data['sys']['country'] ),
-		'temperature' => (float) $data['main']['temp'],
-		'description' => sanitize_text_field( $data['weather'][0]['description'] ),
-		'icon'        => sanitize_text_field( $data['weather'][0]['icon'] ),
-		'humidity'    => (int) $data['main']['humidity'],
-		'units'       => $units,
-	);
-
-	// Cache the data for 15 minutes.
-	set_transient( $cache_key, $weather_data, 15 * MINUTE_IN_SECONDS );
 
 	return rest_ensure_response( $weather_data );
 }
@@ -245,10 +181,17 @@ function weather_block_render_callback( array $attributes ): string {
 	$units = isset( $attributes['units'] ) ? sanitize_text_field( $attributes['units'] ) : 'metric';
 	$display_mode = isset( $attributes['displayMode'] ) ? sanitize_text_field( $attributes['displayMode'] ) : 'auto';
 
-	$cache_key = 'weather_block_' . md5( $location . $units );
-	$weather_data = get_transient( $cache_key );
+	// Create weather API instance and get data.
+	$weather_api = new WeatherBlock\WeatherApi( WEATHER_BLOCK_API_KEY );
+	$weather_data = $weather_api->get_weather_data( $location, $units );
 
-	if ( false === $weather_data ) {
+	if ( is_wp_error( $weather_data ) ) {
+		return '<div class="weather-block weather-block--error">' .
+			esc_html( $weather_data->get_error_message() ) .
+			'</div>';
+	}
+
+	if ( empty( $weather_data ) ) {
 		return '<div class="weather-block weather-block--error">' .
 			esc_html__( 'Weather data is loading...', 'weather-block' ) .
 			'</div>';

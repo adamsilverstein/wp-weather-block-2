@@ -1,0 +1,220 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  php-tests:
+    name: PHP Tests
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php-version: ['7.4', '8.0', '8.1', '8.2']
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php-version }}
+        extensions: mbstring, intl, gd, xml, zip
+        coverage: xdebug
+
+    - name: Cache Composer dependencies
+      uses: actions/cache@v3
+      with:
+        path: vendor
+        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+        restore-keys: ${{ runner.os }}-composer-
+
+    - name: Install Composer dependencies
+      run: composer install --prefer-dist --no-progress --no-suggest
+
+    - name: Run PHP CodeSniffer
+      run: composer run phpcs
+
+    - name: Run PHPStan
+      run: composer run phpstan
+
+    - name: Run PHPUnit tests
+      run: composer run test
+
+    - name: Upload coverage to Codecov
+      if: matrix.php-version == '8.1'
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        flags: php
+        name: php-coverage
+
+  javascript-tests:
+    name: JavaScript Tests
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: ['16', '18', '20']
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+
+    - name: Install npm dependencies
+      run: npm ci
+
+    - name: Run ESLint
+      run: npm run lint:js
+
+    - name: Run Stylelint
+      run: npm run lint:css
+
+    - name: Run Jest tests
+      run: npm run test:unit
+
+    - name: Upload coverage to Codecov
+      if: matrix.node-version == '18'
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage/lcov.info
+        flags: javascript
+        name: js-coverage
+
+  build-test:
+    name: Build Test
+    runs-on: ubuntu-latest
+    needs: [php-tests, javascript-tests]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.1'
+
+    - name: Install dependencies
+      run: |
+        npm ci
+        composer install --no-dev --optimize-autoloader
+
+    - name: Build plugin
+      run: npm run build
+
+    - name: Create plugin zip
+      run: npm run plugin-zip
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: weather-block-plugin
+        path: weather-block.zip
+        retention-days: 30
+
+  e2e-tests:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    needs: build-test
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Install Playwright browsers
+      run: npx playwright install --with-deps
+
+    - name: Build plugin
+      run: npm run build
+
+    - name: Run Playwright tests
+      run: npm run test:e2e
+
+    - name: Upload Playwright report
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: playwright-report
+        path: playwright-report/
+        retention-days: 30
+
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.1'
+
+    - name: Install Composer dependencies
+      run: composer install --prefer-dist --no-progress
+
+    - name: Run security audit
+      run: composer audit
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install npm dependencies
+      run: npm ci
+
+    - name: Run npm audit
+      run: npm audit --audit-level moderate
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: [php-tests, javascript-tests, build-test, e2e-tests, security-scan]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Download build artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: weather-block-plugin
+
+    - name: Create GitHub Release
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: softprops/action-gh-release@v1
+      with:
+        files: weather-block.zip
+        generate_release_notes: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
