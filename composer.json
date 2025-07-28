@@ -25,7 +25,7 @@
     "scripts": {
         "phpcs": "phpcs",
         "phpcbf": "phpcbf",
-        "phpstan": "phpstan analyze --memory-limit=512M",
+        "phpstan": "phpstan analyze --memory-limit=2048M",
         "test": "phpunit"
     },
     "autoload": {
