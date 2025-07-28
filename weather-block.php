@@ -110,6 +110,8 @@ function weather_block_register_rest_routes(): void {
  * @return bool True if user has permission, false otherwise.
  */
 function weather_block_permissions_check( WP_REST_Request $request ): bool {
+	// Request parameter is intentionally unused - permission is based on user capability only.
+	unset( $request );
 	// Allow access for users who can edit posts (editors and above).
 	return current_user_can( 'edit_posts' );
 }

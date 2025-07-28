@@ -142,7 +142,7 @@ class WeatherApi {
 		);
 
 		if ( is_wp_error( $response ) ) {
-			error_log( 'Weather Block API Error: ' . $response->get_error_message() );
+			error_log( 'Weather Block API Error: ' . $response->get_error_message() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 			return new \WP_Error(
 				'api_request_failed',
 				__( 'Could not fetch weather data. Please try again later.', 'weather-block' ),
@@ -154,7 +154,7 @@ class WeatherApi {
 		$data = json_decode( $body, true );
 
 		if ( empty( $data ) ) {
-			error_log( 'Weather Block API Error: Empty response body' );
+			error_log( 'Weather Block API Error: Empty response body' ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 			return new \WP_Error(
 				'empty_response',
 				__( 'Received empty response from weather API.', 'weather-block' ),
@@ -164,7 +164,7 @@ class WeatherApi {
 
 		if ( isset( $data['cod'] ) && 200 !== (int) $data['cod'] ) {
 			$error_message = isset( $data['message'] ) ? $data['message'] : __( 'Unknown API error', 'weather-block' );
-			error_log( 'Weather Block API Error: ' . $error_message );
+			error_log( 'Weather Block API Error: ' . $error_message ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 
 			return new \WP_Error(
 				'api_error',
@@ -190,7 +190,7 @@ class WeatherApi {
 		$required_fields = array( 'name', 'sys', 'main', 'weather' );
 		foreach ( $required_fields as $field ) {
 			if ( ! isset( $api_data[ $field ] ) ) {
-				error_log( "Weather Block API Error: Missing required field '{$field}'" );
+				error_log( "Weather Block API Error: Missing required field '{$field}'" ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 				return new \WP_Error(
 					'invalid_api_response',
 					__( 'Invalid response from weather API.', 'weather-block' ),
@@ -201,7 +201,7 @@ class WeatherApi {
 
 		// Validate nested required fields.
 		if ( ! isset( $api_data['sys']['country'] ) ) {
-			error_log( 'Weather Block API Error: Missing country in sys data' );
+			error_log( 'Weather Block API Error: Missing country in sys data' ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 			return new \WP_Error(
 				'invalid_api_response',
 				__( 'Invalid response from weather API.', 'weather-block' ),
@@ -210,7 +210,7 @@ class WeatherApi {
 		}
 
 		if ( ! isset( $api_data['main']['temp'], $api_data['main']['humidity'] ) ) {
-			error_log( 'Weather Block API Error: Missing temperature or humidity in main data' );
+			error_log( 'Weather Block API Error: Missing temperature or humidity in main data' ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 			return new \WP_Error(
 				'invalid_api_response',
 				__( 'Invalid response from weather API.', 'weather-block' ),
@@ -219,7 +219,7 @@ class WeatherApi {
 		}
 
 		if ( ! isset( $api_data['weather'][0]['description'], $api_data['weather'][0]['icon'] ) ) {
-			error_log( 'Weather Block API Error: Missing weather description or icon' );
+			error_log( 'Weather Block API Error: Missing weather description or icon' ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 			return new \WP_Error(
 				'invalid_api_response',
 				__( 'Invalid response from weather API.', 'weather-block' ),

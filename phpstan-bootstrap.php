@@ -38,7 +38,8 @@ if ( ! function_exists( 'register_block_type' ) ) {
 	 * @return mixed
 	 */
 	function register_block_type( string $block_type, array $args = array() ) {
-		// Mock implementation.
+		// Mock implementation - parameters are intentionally unused.
+		unset( $block_type, $args );
 		return null;
 	}
 }
@@ -52,6 +53,8 @@ if ( ! function_exists( '__' ) ) {
 	 * @return string
 	 */
 	function __( string $text, string $domain = 'default' ): string {
+		// Domain parameter is intentionally unused in mock.
+		unset( $domain );
 		return $text;
 	}
 }
