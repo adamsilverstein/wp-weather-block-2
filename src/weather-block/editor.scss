@@ -1,9 +1,154 @@
 /**
- * The following styles get applied inside the editor only.
- *
- * Replace them with your own styles or remove the file completely.
+ * Weather Block Editor Styles
+ * Applied only in the block editor.
  */
 
-.wp-block-create-block-weather-block {
-	border: 1px dotted #f00;
+.weather-block-editor {
+	// Editor-specific container styles
+	border: 1px solid #e0e0e0;
+	border-radius: 4px;
+	background: #fff;
+
+	// Override some frontend styles for better editor experience
+	.weather-block {
+		margin: 0;
+		box-shadow: none;
+
+		&:hover {
+			box-shadow: none;
+		}
+
+		// Make placeholder more prominent in editor
+		&__placeholder {
+			background: #f6f7f7;
+			border: 2px dashed #c3c4c7;
+			color: #1e1e1e;
+			font-style: italic;
+
+			p {
+				font-size: 0.9rem;
+			}
+		}
+
+		// Loading state in editor
+		&__loading {
+			background: #f6f7f7;
+			border: 1px solid #c3c4c7;
+
+			.components-spinner {
+				color: #1e1e1e;
+			}
+
+			p {
+				color: #1e1e1e;
+			}
+		}
+
+		// Error state styling for editor
+		&__error {
+			background: #fff;
+			border: 1px solid #cc1818;
+
+			.components-notice {
+				background: #fff;
+				border-left: 4px solid #cc1818;
+			}
+		}
+	}
+
+	// Selected state
+	&.is-selected {
+		border-color: #007cba;
+		box-shadow: 0 0 0 1px #007cba;
+	}
+
+	// Focus state
+	&:focus-within {
+		border-color: #007cba;
+		box-shadow: 0 0 0 1px #007cba;
+	}
+}
+
+// Inspector controls styling
+.weather-block-inspector {
+	.components-panel__body {
+		.components-base-control {
+			margin-bottom: 16px;
+
+			&:last-child {
+				margin-bottom: 0;
+			}
+		}
+
+		.components-text-control__input {
+			border-radius: 4px;
+		}
+
+		.components-radio-control__option {
+			margin-bottom: 8px;
+
+			&:last-child {
+				margin-bottom: 0;
+			}
+		}
+	}
+}
+
+// Block toolbar customizations
+.block-editor-block-toolbar {
+	.weather-block-toolbar {
+		.components-button {
+			&.is-pressed {
+				background: #007cba;
+				color: #fff;
+			}
+		}
+	}
+}
+
+// Responsive preview in editor
+@media (max-width: 782px) {
+	.weather-block-editor {
+		.weather-block {
+			&__content {
+				flex-direction: column;
+				text-align: center;
+			}
+
+			&__details {
+				text-align: center;
+			}
+		}
+	}
+}
+
+// High contrast mode for editor
+@media (prefers-contrast: high) {
+	.weather-block-editor {
+		border-color: #000;
+
+		&.is-selected,
+		&:focus-within {
+			border-color: #000;
+			box-shadow: 0 0 0 2px #000;
+		}
+
+		.weather-block {
+			&__placeholder,
+			&__loading {
+				background: #fff;
+				border-color: #000;
+				color: #000;
+			}
+		}
+	}
+}
+
+// Reduced motion for editor
+@media (prefers-reduced-motion: reduce) {
+	.weather-block-editor {
+		.weather-block {
+			transition: none;
+		}
+	}
 }

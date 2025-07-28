@@ -1,12 +1,214 @@
 /**
- * The following styles get applied both on the front of your site
- * and in the editor.
- *
- * Replace them with your own styles or remove the file completely.
+ * Weather Block Styles
+ * Applied both on the frontend and in the editor.
  */
 
-.wp-block-create-block-weather-block {
-	background-color: #21759b;
-	color: #fff;
-	padding: 2px;
+.weather-block {
+	border-radius: 12px;
+	padding: 24px;
+	margin: 16px 0;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	transition: all 0.3s ease;
+	max-width: 400px;
+
+	&:hover {
+		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+	}
+
+	// Theme variations
+	&--theme-light {
+		background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+		color: white;
+	}
+
+	&--theme-dark {
+		background: linear-gradient(135deg, #2d3436 0%, #636e72 100%);
+		color: white;
+	}
+
+	&--theme-auto {
+		background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+		color: white;
+
+		@media (prefers-color-scheme: dark) {
+			background: linear-gradient(135deg, #2d3436 0%, #636e72 100%);
+		}
+	}
+
+	&__header {
+		margin-bottom: 16px;
+	}
+
+	&__location {
+		margin: 0;
+		font-size: 1.25rem;
+		font-weight: 600;
+		text-align: center;
+		opacity: 0.9;
+	}
+
+	&__content {
+		display: flex;
+		align-items: center;
+		gap: 20px;
+	}
+
+	&__temperature {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		flex: 1;
+	}
+
+	&__icon {
+		width: 64px;
+		height: 64px;
+		filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+	}
+
+	&__temp {
+		font-size: 2.5rem;
+		font-weight: 700;
+		line-height: 1;
+	}
+
+	&__details {
+		flex: 1;
+		text-align: right;
+	}
+
+	&__description {
+		margin: 0 0 8px 0;
+		font-size: 1.1rem;
+		font-weight: 500;
+		text-transform: capitalize;
+	}
+
+	&__humidity {
+		margin: 0;
+		font-size: 0.9rem;
+		opacity: 0.8;
+	}
+
+	// Error and loading states
+	&__placeholder,
+	&__loading,
+	&__error {
+		text-align: center;
+		padding: 32px 16px;
+		border-radius: 8px;
+		background: #f8f9fa;
+		border: 2px dashed #dee2e6;
+		color: #6c757d;
+
+		p {
+			margin: 0;
+			font-size: 1rem;
+		}
+	}
+
+	&__loading {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 12px;
+
+		.components-spinner {
+			margin: 0;
+		}
+	}
+
+	&__error {
+		background: #fff5f5;
+		border-color: #fed7d7;
+		color: #c53030;
+
+		.components-notice {
+			margin: 0;
+			box-shadow: none;
+		}
+	}
+
+	// Responsive design
+	@media (max-width: 480px) {
+		padding: 16px;
+		margin: 12px 0;
+
+		&__content {
+			flex-direction: column;
+			text-align: center;
+			gap: 16px;
+		}
+
+		&__details {
+			text-align: center;
+		}
+
+		&__temp {
+			font-size: 2rem;
+		}
+
+		&__icon {
+			width: 48px;
+			height: 48px;
+		}
+	}
+}
+
+// Editor-specific styles
+.weather-block-editor {
+	.weather-block {
+		&__placeholder {
+			background: #f0f0f1;
+			border-color: #c3c4c7;
+			color: #1e1e1e;
+		}
+	}
+}
+
+// WordPress block wrapper
+.wp-block-weather-block-weather {
+	.weather-block {
+		margin: 0; // Reset WordPress block margins
+	}
+}
+
+// Accessibility improvements
+.weather-block {
+	&:focus-within {
+		outline: 2px solid #005cee;
+		outline-offset: 2px;
+	}
+
+	&__icon {
+		// Ensure icons are accessible
+		&:focus {
+			outline: 2px solid currentColor;
+			outline-offset: 2px;
+		}
+	}
+}
+
+// High contrast mode support
+@media (prefers-contrast: high) {
+	.weather-block {
+		&--theme-light,
+		&--theme-dark,
+		&--theme-auto {
+			background: #000;
+			color: #fff;
+			border: 2px solid #fff;
+		}
+	}
+}
+
+// Reduced motion support
+@media (prefers-reduced-motion: reduce) {
+	.weather-block {
+		transition: none;
+
+		&:hover {
+			transform: none;
+		}
+	}
 }
