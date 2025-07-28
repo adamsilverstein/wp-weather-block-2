@@ -62,6 +62,15 @@ A modern WordPress block plugin that displays current weather conditions for use
 
 ## Usage
 
+### Setting up the API Key
+
+1. Go to WordPress Admin → Settings → Weather Block
+2. Sign up for a free OpenWeatherMap API account at [openweathermap.org](https://openweathermap.org/api)
+3. Get your API key from your [OpenWeatherMap dashboard](https://home.openweathermap.org/api_keys)
+4. Enter the API key in the settings page
+5. Click "Test API Key" to verify it works
+6. Save the settings
+
 ### Adding a Weather Block
 
 1. In the WordPress block editor, click the "+" button to add a new block
