@@ -85,7 +85,7 @@ class WeatherApi {
 		}
 
 		// Try to get cached data first.
-		$cache_key = $this->get_cache_key( $location, $units );
+		$cache_key   = $this->get_cache_key( $location, $units );
 		$cached_data = get_transient( $cache_key );
 
 		if ( false !== $cached_data ) {
@@ -297,7 +297,7 @@ class WeatherApi {
 	 */
 	public static function get_icon_url( string $icon_code, string $size = '2x' ): string {
 		$icon_code = sanitize_text_field( $icon_code );
-		$size = in_array( $size, array( '2x', '4x' ), true ) ? $size : '2x';
+		$size      = in_array( $size, array( '2x', '4x' ), true ) ? $size : '2x';
 
 		return "https://openweathermap.org/img/wn/{$icon_code}@{$size}.png";
 	}

@@ -37,7 +37,7 @@ if ( ! function_exists( 'register_block_type' ) ) {
 	 * @param array  $args       Block type arguments.
 	 * @return mixed
 	 */
-	function register_block_type( string $block_type, array $args = [] ) {
+	function register_block_type( string $block_type, array $args = array() ) {
 		// Mock implementation.
 		return null;
 	}
@@ -78,7 +78,7 @@ if ( ! function_exists( 'wp_enqueue_script' ) ) {
 	 * @param string $ver    Version.
 	 * @param bool   $in_footer Whether to enqueue in footer.
 	 */
-	function wp_enqueue_script( string $handle, string $src = '', array $deps = [], string $ver = '', bool $in_footer = false ): void {
+	function wp_enqueue_script( string $handle, string $src = '', array $deps = array(), string $ver = '', bool $in_footer = false ): void {
 		// Mock implementation.
 	}
 }

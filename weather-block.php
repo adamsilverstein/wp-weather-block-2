@@ -160,7 +160,7 @@ function weather_block_get_weather_data( WP_REST_Request $request ) {
 	}
 
 	// Create weather API instance.
-	$api_key = WeatherBlock\Settings::get_effective_api_key();
+	$api_key     = WeatherBlock\Settings::get_effective_api_key();
 	$weather_api = new WeatherBlock\WeatherApi( $api_key );
 
 	// Get weather data.
@@ -188,13 +188,13 @@ function weather_block_render_callback( array $attributes ): string {
 	}
 
 	// Get weather data.
-	$location = sanitize_text_field( $attributes['location'] );
-	$units = isset( $attributes['units'] ) ? sanitize_text_field( $attributes['units'] ) : 'metric';
+	$location     = sanitize_text_field( $attributes['location'] );
+	$units        = isset( $attributes['units'] ) ? sanitize_text_field( $attributes['units'] ) : 'metric';
 	$display_mode = isset( $attributes['displayMode'] ) ? sanitize_text_field( $attributes['displayMode'] ) : 'auto';
 
 	// Create weather API instance and get data.
-	$api_key = WeatherBlock\Settings::get_effective_api_key();
-	$weather_api = new WeatherBlock\WeatherApi( $api_key );
+	$api_key      = WeatherBlock\Settings::get_effective_api_key();
+	$weather_api  = new WeatherBlock\WeatherApi( $api_key );
 	$weather_data = $weather_api->get_weather_data( $location, $units );
 
 	if ( is_wp_error( $weather_data ) ) {
@@ -211,7 +211,7 @@ function weather_block_render_callback( array $attributes ): string {
 
 	// Build the HTML output.
 	$temperature_unit = 'metric' === $units ? '°C' : '°F';
-	$icon_url = 'https://openweathermap.org/img/wn/' . esc_attr( $weather_data['icon'] ) . '@2x.png';
+	$icon_url         = 'https://openweathermap.org/img/wn/' . esc_attr( $weather_data['icon'] ) . '@2x.png';
 
 	$html = sprintf(
 		'<div class="weather-block weather-block--theme-%s" data-location="%s">

@@ -131,7 +131,7 @@ class Settings {
 			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'weather-block' ) );
 		}
 
-		$api_key = $this->get_api_key();
+		$api_key       = $this->get_api_key();
 		$is_configured = ! empty( $api_key );
 		?>
 		<div class="wrap">
@@ -307,9 +307,9 @@ class Settings {
 			'weather-block-admin',
 			'weatherBlockAdmin',
 			array(
-				'ajaxUrl'   => admin_url( 'admin-ajax.php' ),
-				'nonce'     => wp_create_nonce( 'weather_block_test_api' ),
-				'strings'   => array(
+				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+				'nonce'   => wp_create_nonce( 'weather_block_test_api' ),
+				'strings' => array(
 					'testing'     => __( 'Testing API key...', 'weather-block' ),
 					'testSuccess' => __( 'API key is valid and working!', 'weather-block' ),
 					'testError'   => __( 'API key test failed. Please check your key and try again.', 'weather-block' ),
@@ -335,9 +335,11 @@ class Settings {
 		$api_key = $this->get_api_key();
 
 		if ( empty( $api_key ) ) {
-			wp_send_json_error( array(
-				'message' => __( 'No API key configured.', 'weather-block' ),
-			) );
+			wp_send_json_error(
+				array(
+					'message' => __( 'No API key configured.', 'weather-block' ),
+				)
+			);
 		}
 
 		// Test the API key with a simple request.
@@ -345,19 +347,23 @@ class Settings {
 		$test_result = $weather_api->get_weather_data( 'London', 'metric' );
 
 		if ( is_wp_error( $test_result ) ) {
-			wp_send_json_error( array(
-				'message' => $test_result->get_error_message(),
-			) );
+			wp_send_json_error(
+				array(
+					'message' => $test_result->get_error_message(),
+				)
+			);
 		}
 
-		wp_send_json_success( array(
-			'message' => __( 'API key is valid and working!', 'weather-block' ),
-			'data'    => array(
-				'location'    => $test_result['location'],
-				'temperature' => $test_result['temperature'],
-				'units'       => $test_result['units'],
-			),
-		) );
+		wp_send_json_success(
+			array(
+				'message' => __( 'API key is valid and working!', 'weather-block' ),
+				'data'    => array(
+					'location'    => $test_result['location'],
+					'temperature' => $test_result['temperature'],
+					'units'       => $test_result['units'],
+				),
+			)
+		);
 	}
 
 	/**
