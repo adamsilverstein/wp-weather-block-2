@@ -19,7 +19,7 @@
 		"start": "wp-scripts start",
 		"test:e2e": "wp-scripts test-e2e",
 		"test:unit": "wp-scripts test-unit-js",
-		"test:php": "phpunit",
+		"test:php": "./vendor/bin/phpunit",
 		"lint:php": "phpcs",
 		"lint:php:fix": "phpcbf",
 		"analyze:php": "phpstan analyze"
