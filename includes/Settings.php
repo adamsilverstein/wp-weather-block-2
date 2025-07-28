@@ -38,6 +38,13 @@ class Settings {
 	private const SETTINGS_GROUP = 'weather_block_settings';
 
 	/**
+	 * Default API key placeholder.
+	 *
+	 * @var string
+	 */
+	private const DEFAULT_API_KEY_PLACEHOLDER = 'your_openweathermap_api_key_here';
+
+	/**
 	 * Initialize the settings page.
 	 *
 	 * @since 0.1.0

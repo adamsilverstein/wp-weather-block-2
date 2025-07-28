@@ -152,6 +152,66 @@ if ( ! function_exists( 'error_log' ) ) {
 	}
 }
 
+if ( ! function_exists( 'get_option' ) ) {
+	/**
+	 * Mock get_option function.
+	 *
+	 * @param string $option  Option name.
+	 * @param mixed  $default Default value.
+	 * @return mixed
+	 */
+	function get_option( string $option, $default = false ) {
+		// Store options in a global array for testing
+		global $wp_options;
+		if ( ! isset( $wp_options ) ) {
+			$wp_options = array();
+		}
+		return isset( $wp_options[ $option ] ) ? $wp_options[ $option ] : $default;
+	}
+}
+
+if ( ! function_exists( 'update_option' ) ) {
+	/**
+	 * Mock update_option function.
+	 *
+	 * @param string $option Option name.
+	 * @param mixed  $value  Option value.
+	 * @return bool
+	 */
+	function update_option( string $option, $value ): bool {
+		global $wp_options;
+		if ( ! isset( $wp_options ) ) {
+			$wp_options = array();
+		}
+		$wp_options[ $option ] = $value;
+		return true;
+	}
+}
+
+if ( ! function_exists( 'add_settings_error' ) ) {
+	/**
+	 * Mock add_settings_error function.
+	 *
+	 * @param string $setting Setting name.
+	 * @param string $code    Error code.
+	 * @param string $message Error message.
+	 * @param string $type    Error type.
+	 */
+	function add_settings_error( string $setting, string $code, string $message, string $type = 'error' ): void {
+		// Store errors in global array for testing
+		global $wp_settings_errors;
+		if ( ! isset( $wp_settings_errors ) ) {
+			$wp_settings_errors = array();
+		}
+		$wp_settings_errors[] = array(
+			'setting' => $setting,
+			'code'    => $code,
+			'message' => $message,
+			'type'    => $type,
+		);
+	}
+}
+
 /**
  * Mock WP_Error class for testing.
  */
