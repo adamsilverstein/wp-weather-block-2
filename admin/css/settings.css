@@ -60,25 +60,25 @@
 .weather-block-status--success {
 	background: #d1eddb;
 	border-left: 4px solid #00a32a;
-	color: #00a32a;
+	color: #155724;
 }
 
 .weather-block-status--error {
 	background: #f7dede;
 	border-left: 4px solid #d63638;
-	color: #d63638;
+	color: #721c24;
 }
 
 .weather-block-status--warning {
 	background: #fcf9e8;
 	border-left: 4px solid #dba617;
-	color: #dba617;
+	color: #856404;
 }
 
 .weather-block-status--unknown {
 	background: #e5f5ff;
 	border-left: 4px solid #0073aa;
-	color: #0073aa;
+	color: #004085;
 }
 
 /* Test API Button */
@@ -198,21 +198,25 @@
 	.weather-block-status--success {
 		background: #fff;
 		border: 2px solid #00a32a;
+		color: #155724;
 	}
 
 	.weather-block-status--error {
 		background: #fff;
 		border: 2px solid #d63638;
+		color: #721c24;
 	}
 
 	.weather-block-status--warning {
 		background: #fff;
 		border: 2px solid #dba617;
+		color: #856404;
 	}
 
 	.weather-block-status--unknown {
 		background: #fff;
 		border: 2px solid #0073aa;
+		color: #004085;
 	}
 }
 
