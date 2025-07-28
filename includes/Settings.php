@@ -403,6 +403,6 @@ class Settings {
 	 */
 	public static function is_api_key_configured(): bool {
 		$api_key = self::get_effective_api_key();
-		return ! empty( $api_key ) && 'your_openweathermap_api_key_here' !== $api_key;
+		return ! empty( $api_key ) && self::DEFAULT_API_KEY_PLACEHOLDER !== $api_key;
 	}
 }
