@@ -14,6 +14,27 @@ if ( ! defined( 'WP_DEBUG' ) ) {
 	define( 'WP_DEBUG', true );
 }
 
+// Define plugin constants for PHPStan.
+if ( ! defined( 'WEATHER_BLOCK_VERSION' ) ) {
+	define( 'WEATHER_BLOCK_VERSION', '0.1.0' );
+}
+
+if ( ! defined( 'WEATHER_BLOCK_PLUGIN_FILE' ) ) {
+	define( 'WEATHER_BLOCK_PLUGIN_FILE', __FILE__ );
+}
+
+if ( ! defined( 'WEATHER_BLOCK_PLUGIN_DIR' ) ) {
+	define( 'WEATHER_BLOCK_PLUGIN_DIR', '/path/to/plugin/' );
+}
+
+if ( ! defined( 'WEATHER_BLOCK_PLUGIN_URL' ) ) {
+	define( 'WEATHER_BLOCK_PLUGIN_URL', 'https://example.com/wp-content/plugins/weather-block/' );
+}
+
+if ( ! defined( 'WEATHER_BLOCK_API_KEY' ) ) {
+	define( 'WEATHER_BLOCK_API_KEY', 'test_api_key' );
+}
+
 // Define common WordPress functions that PHPStan needs to know about.
 if ( ! function_exists( 'add_action' ) ) {
 	/**
@@ -37,8 +58,9 @@ if ( ! function_exists( 'register_block_type' ) ) {
 	 * @param array  $args       Block type arguments.
 	 * @return mixed
 	 */
-	function register_block_type( string $block_type, array $args = [] ) {
-		// Mock implementation.
+	function register_block_type( string $block_type, array $args = array() ) {
+		// Mock implementation - parameters are intentionally unused.
+		unset( $block_type, $args );
 		return null;
 	}
 }
@@ -52,6 +74,8 @@ if ( ! function_exists( '__' ) ) {
 	 * @return string
 	 */
 	function __( string $text, string $domain = 'default' ): string {
+		// Domain parameter is intentionally unused in mock.
+		unset( $domain );
 		return $text;
 	}
 }
@@ -78,7 +102,7 @@ if ( ! function_exists( 'wp_enqueue_script' ) ) {
 	 * @param string $ver    Version.
 	 * @param bool   $in_footer Whether to enqueue in footer.
 	 */
-	function wp_enqueue_script( string $handle, string $src = '', array $deps = [], string $ver = '', bool $in_footer = false ): void {
+	function wp_enqueue_script( string $handle, string $src = '', array $deps = array(), string $ver = '', bool $in_footer = false ): void {
 		// Mock implementation.
 	}
 }

@@ -36,6 +36,10 @@ if ( file_exists( WEATHER_BLOCK_PLUGIN_DIR . 'vendor/autoload.php' ) ) {
 	require_once WEATHER_BLOCK_PLUGIN_DIR . 'vendor/autoload.php';
 }
 
+// Load plugin classes.
+require_once WEATHER_BLOCK_PLUGIN_DIR . 'includes/WeatherApi.php';
+require_once WEATHER_BLOCK_PLUGIN_DIR . 'includes/Settings.php';
+
 /**
  * Initialize the Weather Block plugin.
  *
@@ -59,6 +63,12 @@ function weather_block_init(): void {
 
 	// Register REST API endpoints for weather data.
 	weather_block_register_rest_routes();
+
+	// Initialize settings page.
+	if ( is_admin() ) {
+		$settings = new WeatherBlock\Settings();
+		$settings->init();
+	}
 }
 add_action( 'init', 'weather_block_init' );
 
@@ -100,6 +110,8 @@ function weather_block_register_rest_routes(): void {
  * @return bool True if user has permission, false otherwise.
  */
 function weather_block_permissions_check( WP_REST_Request $request ): bool {
+	// Request parameter is intentionally unused - permission is based on user capability only.
+	unset( $request );
 	// Allow access for users who can edit posts (editors and above).
 	return current_user_can( 'edit_posts' );
 }
@@ -150,7 +162,8 @@ function weather_block_get_weather_data( WP_REST_Request $request ) {
 	}
 
 	// Create weather API instance.
-	$weather_api = new WeatherBlock\WeatherApi( WEATHER_BLOCK_API_KEY );
+	$api_key     = WeatherBlock\Settings::get_effective_api_key();
+	$weather_api = new WeatherBlock\WeatherApi( $api_key );
 
 	// Get weather data.
 	$weather_data = $weather_api->get_weather_data( $location, $units );
@@ -177,12 +190,13 @@ function weather_block_render_callback( array $attributes ): string {
 	}
 
 	// Get weather data.
-	$location = sanitize_text_field( $attributes['location'] );
-	$units = isset( $attributes['units'] ) ? sanitize_text_field( $attributes['units'] ) : 'metric';
+	$location     = sanitize_text_field( $attributes['location'] );
+	$units        = isset( $attributes['units'] ) ? sanitize_text_field( $attributes['units'] ) : 'metric';
 	$display_mode = isset( $attributes['displayMode'] ) ? sanitize_text_field( $attributes['displayMode'] ) : 'auto';
 
 	// Create weather API instance and get data.
-	$weather_api = new WeatherBlock\WeatherApi( WEATHER_BLOCK_API_KEY );
+	$api_key      = WeatherBlock\Settings::get_effective_api_key();
+	$weather_api  = new WeatherBlock\WeatherApi( $api_key );
 	$weather_data = $weather_api->get_weather_data( $location, $units );
 
 	if ( is_wp_error( $weather_data ) ) {
@@ -199,7 +213,7 @@ function weather_block_render_callback( array $attributes ): string {
 
 	// Build the HTML output.
 	$temperature_unit = 'metric' === $units ? '°C' : '°F';
-	$icon_url = 'https://openweathermap.org/img/wn/' . esc_attr( $weather_data['icon'] ) . '@2x.png';
+	$icon_url         = 'https://openweathermap.org/img/wn/' . esc_attr( $weather_data['icon'] ) . '@2x.png';
 
 	$html = sprintf(
 		'<div class="weather-block weather-block--theme-%s" data-location="%s">

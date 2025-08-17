@@ -1,10 +1,9 @@
 /**
  * Tests for the Weather Block edit component.
- *
- * @package WeatherBlock
  */
 
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
+import { screen } from '@testing-library/dom';
 import '@testing-library/jest-dom';
 import Edit from '../../src/weather-block/edit';
 
@@ -15,15 +14,22 @@ jest.mock( '@wordpress/i18n', () => ( {
 
 jest.mock( '@wordpress/block-editor', () => ( {
 	useBlockProps: () => ( { className: 'wp-block-weather-block-weather' } ),
-	InspectorControls: ( { children } ) => <div data-testid="inspector-controls">{ children }</div>,
+	InspectorControls: ( { children } ) => (
+		<div data-testid="inspector-controls">{ children }</div>
+	),
 } ) );
 
 jest.mock( '@wordpress/components', () => ( {
-	PanelBody: ( { children, title } ) => <div data-testid="panel-body" title={ title }>{ children }</div>,
+	PanelBody: ( { children, title } ) => (
+		<div data-testid="panel-body" title={ title }>
+			{ children }
+		</div>
+	),
 	TextControl: ( { label, value, onChange, placeholder, help } ) => (
 		<div data-testid="text-control">
-			<label>{ label }</label>
+			<label htmlFor="text-input">{ label }</label>
 			<input
+				id="text-input"
 				value={ value }
 				onChange={ ( e ) => onChange( e.target.value ) }
 				placeholder={ placeholder }
@@ -33,28 +39,39 @@ jest.mock( '@wordpress/components', () => ( {
 	),
 	RadioControl: ( { label, selected, options, onChange, help } ) => (
 		<div data-testid="radio-control">
-			<label>{ label }</label>
-			{ options.map( ( option ) => (
-				<label key={ option.value }>
-					<input
-						type="radio"
-						value={ option.value }
-						checked={ selected === option.value }
-						onChange={ () => onChange( option.value ) }
-					/>
-					{ option.label }
-				</label>
-			) ) }
-			{ help && <p>{ help }</p> }
+			<fieldset>
+				<legend>{ label }</legend>
+				{ options.map( ( option ) => (
+					<label
+						key={ option.value }
+						htmlFor={ `radio-${ option.value }` }
+					>
+						<input
+							id={ `radio-${ option.value }` }
+							type="radio"
+							value={ option.value }
+							checked={ selected === option.value }
+							onChange={ () => onChange( option.value ) }
+						/>
+						{ option.label }
+					</label>
+				) ) }
+				{ help && <p>{ help }</p> }
+			</fieldset>
 		</div>
 	),
 	Spinner: () => <div data-testid="spinner">Loading...</div>,
-	Notice: ( { children, status } ) => <div data-testid="notice" className={ `notice-${ status }` }>{ children }</div>,
+	Notice: ( { children, status } ) => (
+		<div data-testid="notice" className={ `notice-${ status }` }>
+			{ children }
+		</div>
+	),
 } ) );
 
 jest.mock( '@wordpress/element', () => ( {
 	useState: require( 'react' ).useState,
 	useEffect: require( 'react' ).useEffect,
+	useCallback: require( 'react' ).useCallback,
 } ) );
 
 jest.mock( '@wordpress/api-fetch', () => jest.fn() );
@@ -78,13 +95,19 @@ describe( 'Weather Block Edit Component', () => {
 	test( 'renders placeholder when no location is set', () => {
 		render( <Edit { ...defaultProps } /> );
 
-		expect( screen.getByText( 'Enter a location in the sidebar to display weather information.' ) ).toBeInTheDocument();
+		expect(
+			screen.getByText(
+				'Enter a location in the sidebar to display weather information.'
+			)
+		).toBeInTheDocument();
 	} );
 
 	test( 'renders inspector controls', () => {
 		render( <Edit { ...defaultProps } /> );
 
-		expect( screen.getByTestId( 'inspector-controls' ) ).toBeInTheDocument();
+		expect(
+			screen.getByTestId( 'inspector-controls' )
+		).toBeInTheDocument();
 		expect( screen.getByTestId( 'panel-body' ) ).toBeInTheDocument();
 	} );
 
@@ -102,9 +125,13 @@ describe( 'Weather Block Edit Component', () => {
 		const radioControl = screen.getAllByTestId( 'radio-control' );
 		expect( radioControl ).toHaveLength( 2 ); // Units and Display Mode
 
-		expect( screen.getByLabelText( 'Temperature Units' ) ).toBeInTheDocument();
+		expect(
+			screen.getByLabelText( 'Temperature Units' )
+		).toBeInTheDocument();
 		expect( screen.getByLabelText( 'Celsius (°C)' ) ).toBeInTheDocument();
-		expect( screen.getByLabelText( 'Fahrenheit (°F)' ) ).toBeInTheDocument();
+		expect(
+			screen.getByLabelText( 'Fahrenheit (°F)' )
+		).toBeInTheDocument();
 	} );
 
 	test( 'renders display mode radio control', () => {
@@ -122,7 +149,9 @@ describe( 'Weather Block Edit Component', () => {
 
 		render( <Edit { ...props } /> );
 
-		const locationInput = screen.getByPlaceholderText( 'Enter city name (e.g., New York)' );
+		const locationInput = screen.getByPlaceholderText(
+			'Enter city name (e.g., New York)'
+		);
 		locationInput.value = 'New York';
 		locationInput.dispatchEvent( new Event( 'change', { bubbles: true } ) );
 

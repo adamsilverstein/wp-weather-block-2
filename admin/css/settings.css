@@ -1,0 +1,273 @@
+/**
+ * Weather Block Admin Settings Styles
+ */
+
+.weather-block-settings {
+	display: flex;
+	gap: 20px;
+	margin-top: 20px;
+}
+
+.weather-block-settings__main {
+	flex: 2;
+}
+
+.weather-block-settings__sidebar {
+	flex: 1;
+	max-width: 300px;
+}
+
+.weather-block-settings__sidebar .postbox {
+	margin-bottom: 20px;
+}
+
+.weather-block-settings__sidebar .postbox .inside {
+	padding: 12px;
+}
+
+/* API Key Field */
+#weather_block_api_key {
+	font-family: 'Courier New', Courier, monospace;
+	letter-spacing: 1px;
+}
+
+#weather-block-toggle-visibility {
+	margin-left: 5px;
+	vertical-align: top;
+}
+
+#weather-block-toggle-visibility .dashicons {
+	font-size: 16px;
+	line-height: 1;
+}
+
+/* Status Indicators */
+.weather-block-status {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 10px;
+	border-radius: 4px;
+	margin: 0 0 15px 0;
+	font-weight: 500;
+}
+
+.weather-block-status .dashicons {
+	font-size: 18px;
+	line-height: 1;
+}
+
+.weather-block-status--success {
+	background: #d1eddb;
+	border-left: 4px solid #00a32a;
+	color: #155724;
+}
+
+.weather-block-status--error {
+	background: #f7dede;
+	border-left: 4px solid #d63638;
+	color: #721c24;
+}
+
+.weather-block-status--warning {
+	background: #fcf9e8;
+	border-left: 4px solid #dba617;
+	color: #856404;
+}
+
+.weather-block-status--unknown {
+	background: #e5f5ff;
+	border-left: 4px solid #0073aa;
+	color: #004085;
+}
+
+/* Test API Button */
+#weather-block-test-api {
+	width: 100%;
+	margin-top: 10px;
+}
+
+#weather-block-test-api:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+#weather-block-test-api.testing {
+	position: relative;
+}
+
+#weather-block-test-api.testing::before {
+	content: '';
+	position: absolute;
+	left: 10px;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 16px;
+	height: 16px;
+	border: 2px solid #ccc;
+	border-top: 2px solid #0073aa;
+	border-radius: 50%;
+	animation: weather-block-spin 1s linear infinite;
+}
+
+@keyframes weather-block-spin {
+	0% { transform: translateY(-50%) rotate(0deg); }
+	100% { transform: translateY(-50%) rotate(360deg); }
+}
+
+/* Getting Started List */
+.weather-block-settings__sidebar ol {
+	margin: 0;
+	padding-left: 20px;
+}
+
+.weather-block-settings__sidebar ol li {
+	margin-bottom: 8px;
+	line-height: 1.4;
+}
+
+.weather-block-settings__sidebar ul {
+	margin: 0;
+	padding-left: 20px;
+}
+
+.weather-block-settings__sidebar ul li {
+	margin-bottom: 6px;
+}
+
+.weather-block-settings__sidebar a {
+	text-decoration: none;
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+}
+
+.weather-block-settings__sidebar a:hover {
+	text-decoration: underline;
+}
+
+.weather-block-settings__sidebar a .dashicons {
+	font-size: 14px;
+	line-height: 1;
+}
+
+/* Form Styling */
+.weather-block-settings form table {
+	margin-top: 0;
+}
+
+.weather-block-settings .form-table th {
+	padding-top: 15px;
+	padding-bottom: 15px;
+}
+
+.weather-block-settings .form-table td {
+	padding-top: 10px;
+	padding-bottom: 15px;
+}
+
+/* Responsive Design */
+@media (max-width: 782px) {
+	.weather-block-settings {
+		flex-direction: column;
+		gap: 15px;
+	}
+
+	.weather-block-settings__sidebar {
+		max-width: none;
+	}
+
+	.weather-block-settings__sidebar .postbox {
+		margin-bottom: 15px;
+	}
+
+	#weather_block_api_key {
+		width: 100%;
+		max-width: none;
+	}
+
+	#weather-block-toggle-visibility {
+		margin-left: 0;
+		margin-top: 5px;
+		display: block;
+	}
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+	.weather-block-status--success {
+		background: #fff;
+		border: 2px solid #00a32a;
+		color: #155724;
+	}
+
+	.weather-block-status--error {
+		background: #fff;
+		border: 2px solid #d63638;
+		color: #721c24;
+	}
+
+	.weather-block-status--warning {
+		background: #fff;
+		border: 2px solid #dba617;
+		color: #856404;
+	}
+
+	.weather-block-status--unknown {
+		background: #fff;
+		border: 2px solid #0073aa;
+		color: #004085;
+	}
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+	@keyframes weather-block-spin {
+		0% { transform: translateY(-50%) rotate(0deg); }
+		100% { transform: translateY(-50%) rotate(0deg); }
+	}
+
+	#weather-block-test-api.testing::before {
+		animation: none;
+		border: 2px solid #0073aa;
+		border-radius: 0;
+		width: 4px;
+		height: 4px;
+	}
+}
+
+/* Focus Styles for Accessibility */
+#weather_block_api_key:focus,
+#weather-block-toggle-visibility:focus,
+#weather-block-test-api:focus {
+	outline: 2px solid #005cee;
+	outline-offset: 2px;
+}
+
+/* Screen Reader Text */
+.screen-reader-text {
+	clip: rect(1px, 1px, 1px, 1px);
+	position: absolute !important;
+	height: 1px;
+	width: 1px;
+	overflow: hidden;
+}
+
+.screen-reader-text:focus {
+	background-color: #f1f1f1;
+	border-radius: 3px;
+	box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.6);
+	clip: auto !important;
+	color: #21759b;
+	display: block;
+	font-size: 14px;
+	font-weight: bold;
+	height: auto;
+	left: 5px;
+	line-height: normal;
+	padding: 15px 23px 14px;
+	text-decoration: none;
+	top: 5px;
+	width: auto;
+	z-index: 100000;
+}

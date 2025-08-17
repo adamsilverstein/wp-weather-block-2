@@ -11,8 +11,9 @@ parameters:
 	bootstrapFiles:
 		- phpstan-bootstrap.php
 	ignoreErrors:
-		# WordPress functions are not defined in the context PHPStan runs
-		- '#Function (add_action|add_filter|register_block_type|wp_enqueue_script|wp_enqueue_style|__) not found#'
-		- '#Constant ABSPATH not found#'
-	extensions:
-		- szepeviktor/phpstan-wordpress
+		# WordPress-specific type issues that are expected in WordPress plugins
+		- '#Method.*has invalid return type.*WP_Error#'
+		- '#should return.*but returns WP_Error#'
+		- '#is_wp_error.*will always evaluate to false#'
+		- '#Call to method get_error_message\(\) on an unknown class.*WP_Error#'
+		- '#Parameter.*of function wp_die expects.*int given#'

@@ -27,7 +27,7 @@ import {
 /**
  * React hooks.
  */
-import { useState, useEffect } from '@wordpress/element';
+import { useState, useEffect, useCallback } from '@wordpress/element';
 
 /**
  * WordPress data and API fetch utilities.
@@ -63,7 +63,7 @@ export default function Edit( { attributes, setAttributes } ) {
 	/**
 	 * Fetch weather data from the REST API.
 	 */
-	const fetchWeatherData = async () => {
+	const fetchWeatherData = useCallback( async () => {
 		if ( ! location || location.trim() === '' ) {
 			setWeatherData( null );
 			setError( null );
@@ -83,7 +83,6 @@ export default function Edit( { attributes, setAttributes } ) {
 
 			setWeatherData( data );
 		} catch ( err ) {
-			console.error( 'Weather API Error:', err );
 			setError(
 				err.message ||
 					__(
@@ -95,7 +94,7 @@ export default function Edit( { attributes, setAttributes } ) {
 		} finally {
 			setIsLoading( false );
 		}
-	};
+	}, [ location, units ] );
 
 	/**
 	 * Effect to fetch weather data when location or units change.
@@ -106,7 +105,7 @@ export default function Edit( { attributes, setAttributes } ) {
 		}, 500 ); // Debounce API calls
 
 		return () => clearTimeout( timeoutId );
-	}, [ location, units ] );
+	}, [ location, units, fetchWeatherData ] );
 
 	/**
 	 * Handle location input change.
@@ -158,7 +157,7 @@ export default function Edit( { attributes, setAttributes } ) {
 			return (
 				<div className="weather-block__loading">
 					<Spinner />
-					<p>{ __( 'Loading weather data...', 'weather-block' ) }</p>
+					<p>{ __( 'Loading weather data…', 'weather-block' ) }</p>
 				</div>
 			);
 		}
@@ -181,7 +180,9 @@ export default function Edit( { attributes, setAttributes } ) {
 		const iconUrl = `https://openweathermap.org/img/wn/${ weatherData.icon }@2x.png`;
 
 		return (
-			<div className={ `weather-block weather-block--theme-${ displayMode }` }>
+			<div
+				className={ `weather-block weather-block--theme-${ displayMode }` }
+			>
 				<div className="weather-block__header">
 					<h3 className="weather-block__location">
 						{ weatherData.location }, { weatherData.country }
@@ -201,7 +202,9 @@ export default function Edit( { attributes, setAttributes } ) {
 					</div>
 					<div className="weather-block__details">
 						<p className="weather-block__description">
-							{ weatherData.description.charAt( 0 ).toUpperCase() +
+							{ weatherData.description
+								.charAt( 0 )
+								.toUpperCase() +
 								weatherData.description.slice( 1 ) }
 						</p>
 						<p className="weather-block__humidity">
@@ -274,7 +277,7 @@ export default function Edit( { attributes, setAttributes } ) {
 						] }
 						onChange={ onDisplayModeChange }
 						help={ __(
-							'Auto mode will respect the user\'s system theme preference.',
+							"Auto mode will respect the user's system theme preference.",
 							'weather-block'
 						) }
 					/>
